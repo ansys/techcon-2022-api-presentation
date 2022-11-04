@@ -1,22 +1,20 @@
-## Ansys LaTeX Beamer Slide Template
+## Ansys Techcon 2022 - API Guidance and Best Practices
 
-This is a [LaTeX](https://www.latex-project.org/) [beamer](https://ctan.org/pkg/beamer?lang=en) template you can use to create an Ansys style presentations without the use of PowerPoint. It follows the Ansys template as much as possible including:
+This repository contains the content for the API Guidance and Best Practices presentation.
 
-- Style
-- Font
-- Organization
-- Theme
+These slides were generated using the [Ansys Beamer Template](https://github.com/ansys/beamer-template)
 
-Please feel free to point out any problems with this template by opening an [issue](https://github.com/ansys/beamer-template/issues).
+Excellent example API at [OpenAI API](https://openai.com/blog/openai-api/).
 
-### Preview
+### Comments or Suggestions
 
-Visit [sample.pdf](https://ubiquitous-spoon-7c23a783.pages.github.io/sample.pdf) to see the full generated presentation.
+Please feel free to point out any problems with this presentation by opening an [issue](https://github.com/ansys/techcon-2022-api-presentation/issues).
 
-[![sample.pdf](figures/title.png)](https://ubiquitous-spoon-7c23a783.pages.github.io/sample.pdf)
+### View the Presentation
 
+Visit [api_techcon_2022.pdf](https://crispy-guacamole-c1babc92.pages.github.io/api_techcon_2022.pdf) to see the full generated presentation.
 
-### Installation
+## Build it Yourself
 
 Due to the usage of ttf fonts, this template requires [LuaTeX](https://www.luatex.org/).
 
