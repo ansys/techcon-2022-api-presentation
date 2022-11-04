@@ -20,10 +20,10 @@
 \hypersetup{
     colorlinks=true,
     linkcolor=blue,
-    filecolor=magenta,      
+    filecolor=magenta,
     urlcolor=cyan,
 }
- 
+
 
 \urlstyle{same}
 \setbeamercolor{background canvas}{bg=}
@@ -34,38 +34,38 @@
 
 \tikzset{
   startstop/.style={
-    rectangle, 
+    rectangle,
     rounded corners,
     minimum width=3cm,
     minimum height=0.75cm,
-    align=center, 
-    draw=black, 
+    align=center,
+    draw=black,
     fill=ANSYS@Gold,
     },
   process/.style={
-    rectangle, 
-    minimum width=3cm, 
-    minimum height=0.75cm, 
-    align=center, 
-    draw=black, 
+    rectangle,
+    minimum width=3cm,
+    minimum height=0.75cm,
+    align=center,
+    draw=black,
     fill=ANSYS@Blue,
     text=white,
     },
   decision/.style={
-    diamond, 
+    diamond,
     aspect=4,
-    minimum width=3cm, 
+    minimum width=3cm,
     minimum height=1cm,
     align=center,
-    draw=black, 
+    draw=black,
     fill=ANSYS@Blue,
     text=white,
     },
   arrow/.style={thick,->,>=stealth},
   dec/.style={
-    ellipse, 
-    align=center, 
-    draw=black, 
+    ellipse,
+    align=center,
+    draw=black,
     fill=ANSYS@Bronze,
     },
 }
@@ -77,7 +77,7 @@
 
 \title{API Guidance and Best Practices}
 %% \subtitle{}
-\author{Alex Kaszyski \\ Roberto Pastor Muela}
+\author{Alex Kaszynski \\ Roberto Pastor Muela}
 \date{\today}
 
 \titleframe{}
@@ -88,7 +88,7 @@
 
 \begin{frame}{Table of Contents}
   \tableofcontents
-  \vspace{200pt}  %% force top tight  
+  \vspace{200pt}  %% force top tight
 \end{frame}
 
 
@@ -124,7 +124,7 @@
       %% tools work, they are less error prone.
 
       \textbf{What do developers want?}
-      
+
       \begin{itemize}
       \item{Well documented low-level interface to foreign libraries to avoid
         duplicating work.}
@@ -173,7 +173,7 @@
       \draw \firstcircle node[below,text width=4cm,align=center,shift={(-3ex,0ex)}] {\small Product\\ Automation};
       \draw \secondcircle node [above,text width=4cm,align=center,shift={(0ex,3ex)}] {\small Low-Level\\ Access};
       \draw \thirdcircle node [below,text width=4cm,align=center,shift={(3ex,0ex)}] {\small Internal\\ Developers};
-      
+
       \node[] at (1.235,0.8) {APIs};
       \node[] at (1.235,-0.5) {Plugins};
       \node[] at (2.3,1.3) {*.c,*.h};
@@ -212,7 +212,7 @@
   %% This cabinet also contained what Wilkes and Wheeler called a
   %% "library catalog" of notes about each subroutine and how to incorporate it
   %% into a program.
-  %% 
+  %%
   %% Today, such a catalog would be called an API (or an API
   %% specification or API documentation) because it instructs a programmer on
   %% how to call each subroutine.
@@ -308,7 +308,14 @@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\transitionframe{Ansys's API - Local and Remote}
 \section{Ansys's API - Local and Remote}
+
+\begin{frame}
+  \frametitle{APIs - Definition and Examples}
+  \tableofcontents[currentsection]
+  \vspace{200pt}  %% force top tight
+\end{frame}
 
 \begin{frame}
   \frametitle{Ansys's API - A Holistic Overview}
@@ -334,7 +341,6 @@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 
 \begin{frame}
   \frametitle{Ansys's Product APIs - Tech Stack}
@@ -375,8 +381,42 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % low-level part
 
+\def\pyramidone{
+
+  %% Stack pyramid
+  \resizebox{.004\textwidth}{!}{
+    \begin{tikzpicture}[overlay]
+      \tikzset{shift={(current page.center)},xshift=39cm,yshift=-1cm}
+    \coordinate (A) at (-4,0) {};
+    \coordinate (B) at ( 4,0) {};
+    \coordinate (C) at (0,6) {};
+    \draw[name path=AC] (A) -- (C);
+    \draw[name path=BC] (B) -- (C);
+    \foreach \y/\A in {
+      0/\color{ANSYS@Bronze} Core Library API,
+      2/\color{lightgray} Product Automation API,
+      4/\color{lightgray} Remote API/Network
+    } {
+      \path[name path=horiz] (A|-0,\y) -- (B|-0,\y);
+
+      % Level of API
+      \draw[name intersections={of=AC and horiz,by=P},
+        name intersections={of=BC and horiz,by=Q}] (P) -- (Q);
+
+      % Language/Architecture
+      \draw[name intersections={of=AC and horiz,by=P},
+        name intersections={of=BC and horiz,by=Q}] (P) -- (Q)
+      node[midway,above,shift={(-40ex,0ex)}] {\huge \A};
+
+    }
+  \end{tikzpicture}
+  }
+
+}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}
+\subsection{Core Library API}
+\begin{frame}[fragile=singleslide]
   \frametitle{Core Library API - Overview}
   \vspace{-10pt}
 
@@ -386,50 +426,74 @@
   \item Minimizes code overhead and duplication.
   \end{itemize}
 
-  %% Simple pyramid
+  \vspace{2pt}
+  \inputminted[fontsize=\tiny]{python}{code/fdresu.inc}
 
+  \pyramidone
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% mid-level
+
+\def\pyramidtwo{
+
+  %% Stack pyramid
   \resizebox{.004\textwidth}{!}{
     \begin{tikzpicture}[overlay]
-      \tikzset{shift={(current page.center)},xshift=40cm,yshift=-16cm}
+      \tikzset{shift={(current page.center)},xshift=39cm,yshift=-1.2cm}
     \coordinate (A) at (-4,0) {};
     \coordinate (B) at ( 4,0) {};
     \coordinate (C) at (0,6) {};
     \draw[name path=AC] (A) -- (C);
     \draw[name path=BC] (B) -- (C);
     \foreach \y/\A in {
-      0/Core Library API,
-      2/Product Automation API,
-      4/Remote API/Network
+      0/\color{lightgray} Core Library API,
+      2/\color{ANSYS@Bronze} Product Automation API,
+      4/\color{lightgray} Remote API/Network
     } {
       \path[name path=horiz] (A|-0,\y) -- (B|-0,\y);
 
       % Level of API
       \draw[name intersections={of=AC and horiz,by=P},
-        name intersections={of=BC and horiz,by=Q}] (P) -- (Q)
-      node[midway,above] ;
+        name intersections={of=BC and horiz,by=Q}] (P) -- (Q);
 
       % Language/Architecture
       \draw[name intersections={of=AC and horiz,by=P},
         name intersections={of=BC and horiz,by=Q}] (P) -- (Q)
-      node[midway,above,shift={(-28ex,0ex)}] {\huge \A};
+      node[midway,above,shift={(-40ex,0ex)}] {\huge \A};
 
     }
   \end{tikzpicture}
   }
 
-\end{frame}
+}
 
-% code snippet
-\begin{frame}
-  \frametitle{Core Library API - FORTRAN Header}
-  \inputminted[fontsize=\footnotesize]{python}{code/fdresu.inc}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Product Customization and Automation}
+\begin{frame}[fragile=singleslide]
+  \frametitle{Product Customization and Automation - Overview}
+  \vspace{-10pt}
+
+  \begin{itemize}
+  \item Directed at method developers who understand the product at the ``analyst'' level as well as understand basic programming.
+  \item Target language should be a high-level interpreted language like Python or Julia.
+  \item Python is one of the top languages used by method developers due to its
+    wide and deep ecosystem of libraries, frameworks, and tools.
+  \end{itemize}
+
+  \href{https://www.tiobe.com/tiobe-index/}{\includegraphics[height=.4\textheight]{./figures/tiobe_index.png}}
+
+  \pyramidtwo
+
 \end{frame}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}[fragile=singleslide]
-  \frametitle{Product Customization and Automation - Product Automation}
+  \frametitle{Product Customization and Automation - Example}
   \vspace{-10pt}
 
   \begin{columns}[T]
@@ -438,288 +502,139 @@
       \inputminted[fontsize=\footnotesize]{python}{code/pymapdl_example.py}
     \end{column}
 
-    \begin{column}{.5\textwidth}          
+    \begin{column}{.5\textwidth}
       \centering
       \includegraphics[height=5cm]{figures/sphx_glr_exhaust_manifold_thermal_stress_002.png}
     \end{column}
 
   \end{columns}
-  
+
 \end{frame}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}
-  \frametitle{Product Customization and Automation - Product Automation}
+% top-level
+
+\def\pyramidthree{
+
+  %% Stack pyramid
+  \resizebox{.004\textwidth}{!}{
+    \begin{tikzpicture}[overlay]
+      \tikzset{shift={(current page.center)},xshift=39cm,yshift=-11.5cm}
+    \coordinate (A) at (-4,0) {};
+    \coordinate (B) at ( 4,0) {};
+    \coordinate (C) at (0,6) {};
+    \draw[name path=AC] (A) -- (C);
+    \draw[name path=BC] (B) -- (C);
+    \foreach \y/\A in {
+      0/\color{lightgray} Core Library API,
+      2/\color{lightgray} Product Automation API,
+      4/\color{ANSYS@Bronze} Remote API/Network
+    } {
+      \path[name path=horiz] (A|-0,\y) -- (B|-0,\y);
+
+      % Level of API
+      \draw[name intersections={of=AC and horiz,by=P},
+        name intersections={of=BC and horiz,by=Q}] (P) -- (Q);
+
+      % Language/Architecture
+      \draw[name intersections={of=AC and horiz,by=P},
+        name intersections={of=BC and horiz,by=Q}] (P) -- (Q)
+      node[midway,above,shift={(-40ex,0ex)}] {\huge \A};
+
+    }
+  \end{tikzpicture}
+  }
+
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Remote API}
+\begin{frame}[fragile=singleslide]
+  \frametitle{Remote API - Overview}
   \vspace{-10pt}
 
   \begin{itemize}
-  \item Python is one of the top languages used by method developers.
-  \item Used as ``glue'' to tie several libraries together as well as perform
-    data operations, machine learning, and design optimization.
-  \item Wide and deep ecosystem of libraries, frameworks, and tools.
+  \item Consider two types of Remote APIs:
+    \begin{itemize}
+    \item{Inter-product communication: Use an architecture designed to allow
+      the manipulation and exchange of information between multiple
+      technologies and componentized software
+      components. The \href{https://grpc.io/}{gRPC framework} works well for this
+      scenario.}
+    \item{Web APIs: Use an architecture designed for the interaction of
+       physically separate components. \href{https://restfulapi.net/}{REST} is
+       an ideal architectural style given its stateless, cacheable nature.}
+    \end{itemize}
+  \item The choice of the underlying architecture and technology must be driven
+    by the problem and there is no ``one size fits all'' solution.
   \end{itemize}
 
-  \centering
-  \href{https://www.tiobe.com/tiobe-index/}{\includegraphics[height=.5\textheight]{./figures/tiobe_index.png}}
+  \pyramidthree{}
+
+  %% Get example on the left
+  \vspace{-20pt}
+  \begin{columns}[T]
+    \begin{column}{.6\textwidth}
+      \begin{example}
+        \begin{lstlisting}[basicstyle=\scriptsize]
+curl -X POST "http://127.0.0.1:5000/Vectors" \
+  -H "Content-Type: application/json" \
+  -d '{"value":[5, 23, 3, 4]}'
+        \end{lstlisting}
+      \end{example}
+    \end{column}
+    \begin{column}{.2\textwidth}
+    \end{column}
+  \end{columns}
 
 \end{frame}
 
 
-
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% \subsection{End Slide}
-%% \begin{frame}[fragile=singleslide]
-%%   \frametitle{End Slide}
-
-%%   The end slide can be created with:
-%%   \vspace{\baselineskip}
-
-%%   \verb|\lastframe|
-%%   \vspace{\baselineskip}
-
-%%   The end slide follows.
-
-%% \end{frame}
-
-%% \lastframe{}
-
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% \section{LaTeX Beamer Features}
-
-%% \begin{frame}
-%%   \frametitle{LaTeX Beamer Features}
-%%   \tableofcontents[currentsection]
-%%   \vspace{200pt}  %% force top tight
-%% \end{frame}
-
-%% \begin{frame}[fragile=singleslide]
-%%   \frametitle{LaTeX Beamer Features}
-
-%%   The Beamer document class contains a variety of features to simplify creating
-%%   presentations within LaTeX. This includes:
-
-%%   \begin{itemize}
-%%     \item{Title Page}
-%%     \item{Table of Contents}
-%%     \item{Blocks}
-%%   \end{itemize}
-
-%%   For more details, see
-%%   \href{https://www.overleaf.com/learn/latex/Beamer}{Overleaf - Beamer}.
-
-%% \end{frame}
-
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% \subsection{Title Slide}
-%% \begin{frame}[fragile=singleslide]
-%%   \frametitle{Title Slide}
-
-%%   The title slide uses the \verb|\titleframe{}| command preceded by commands
-%%   containing metadata of the presentation.
-
-%%   \begin{lstlisting}[basicstyle=\footnotesize\ttfamily]
-
-%% \title{Title}
-%% \subtitle{Subtitle (optional)}
-%% \author{First Middle Last}
-%% \date{\today}
-
-%%   \end{lstlisting}
-
-%% \end{frame}
-
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% \subsection{Table of Contents}
-%% \begin{frame}[fragile=singleslide]
-%%   \frametitle{Title Slide}
-
-%%   You can auto-generate a table of contents using the \verb|\tableofcontents|
-%%   command. For example:
-
-%%   \begin{lstlisting}[basicstyle=\footnotesize\ttfamily]
-%% \begin{frame}{Table of Contents}
-%%   \tableofcontents
-%%   \vspace{200pt}  %% force top tight  
-%% \end{frame}
-%%   \end{lstlisting}
-
-%%   This table of contents will be built off of the standard \verb|\section| and
-%%   \verb|\subsection| used to organize your presentation. These should precede
-%%   key slides right before \verb|\begin{frame}|.
-
-%%   \begin{lstlisting}[basicstyle=\footnotesize\ttfamily]
-%% \section{Problem statement}
-%% \section{Existing results}
-%%     \subsection{Method 1}
-%%     \subsection{Method 2}
-%% \section{Comparative study}
-%%   \end{lstlisting}
-
-%% \end{frame}
-
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% \subsection{Blocks}
-%% \begin{frame}
-%%   \frametitle{Blocks}
-
-%%   Blocks can be used to highlight important points within a presentation.
-
-%%   \begin{block}{Default Block}
-%%     Block text.
-%%   \end{block}
-
-%%   \begin{alertblock}{Alert Block}
-%%     Block text in an alert block.
-%%   \end{alertblock}
-
-%%   \begin{examples}
-%%     Block text in Ansys Gold block.
-%%   \end{examples}
-
-%% \end{frame}
-
-
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% \section{Content}
-
-%% \begin{frame}
-%%   \frametitle{Content}
-%%   \tableofcontents[currentsection]
-%%   \vspace{200pt}  %% force top tight
-%% \end{frame}
-
-
-%% \begin{frame}
-%%   \frametitle{Content}
-%%   Content in a Beamer presentation can come in a variety of forms, including:
-
-%%   \begin{itemize}
-%%     \item{Figures}
-%%     \item{Flowcharts}
-%%     \item{Code}
-%%   \end{itemize}
-
-%%   The following slides provide several examples for how you can include content
-%%   in a LaTeX presentation.
-
-%% \end{frame}
-
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% \subsection{Figures}
-%% \begin{frame}
-%%   \frametitle{Figures - Full Slide}
-%%   \vspace{-10pt}
-
-%%   Figures can be made to take up most of the slide:
-
-%%   \centering
-%%   \includegraphics[height=.75\textheight]{./figures/github.png}
-
-%% \end{frame}
-
-
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% \begin{frame}[fragile=singleslide]
-%%   \frametitle{Figures - Using Tabular}
-%%   \vspace{-10pt}
-
-%%   Figures can also be made to fit alongside text content using either tables or
-%%   columns. Here we demonstrate using tables with the figure on the left.
-
-%%   \vspace{6pt}
-
-%%   \begin{tabular}{cl}  
-%%     \begin{tabular}{c}
-%%       \includegraphics[height=5cm, width=3.5cm]{figures/blade_accuracy.png}
-%%     \end{tabular}
-%%     & \begin{tabular}{r}
-%%         \parbox{0.7\linewidth}{
-%%             \begin{itemize}
-%%             \item{Item A}
-%%             \item{Item B}
-%%             \item{Item C}
-%%             \end{itemize}
-%%         }
-%%       \end{tabular}  \\
-%% \end{tabular}
-
-%% \end{frame}
-
-
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% \begin{frame}[fragile=singleslide]
-%%   \frametitle{Figures - Using Columns}
-%%   \vspace{-10pt}
-
-%%   Here we demonstrate showing a figure using two columns with code on the left
-%%   and the figure on the right.
-
-%%   \hrulefill{}
-
-%%   \begin{columns}[T]
-%%     \begin{column}{.5\textwidth}
-%%       \vspace{-5pt}
-%%       \inputminted[fontsize=\footnotesize]{python}{code/sample_mpl.py}
-%%     \end{column}
-
-%%     \begin{column}{.5\textwidth}          
-%%       %% \begin{figure}
-%%       \centering
-%%       \includegraphics[height=5cm]{figures/sample_mpl.png}
-%%       %% \end{figure}
-%%     \end{column}
-
-%%   \end{columns}
-
-%% \end{frame}
-
-
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% \subsection{Flowchart}
-%% \begin{frame}
-%%   \frametitle{Example Flowchart}
-%%   \vspace{-10pt}
-
-%%     \begin{columns}[T]
-%%         \begin{column}{.6\textwidth}
-%%           \begin{itemize}
-%%             \item This is a two column slide with a sample flowchart on the right.
-%%             \item This flowchart uses the edges package.
-%%             \item This two column format is helpful when including figures and
-%%               text in the same page.
-%%           \end{itemize}
-%%         \end{column}
-
-
-%%         \begin{column}{.4\textwidth}          
-%%           \begin{figure}
-%%             \centering
-%%             \begin{forest}
-%%               for tree={
-%%                 draw,
-%%                 align=center
-%%               },
-%%               forked edges,
-%%               [Front-end\\ (e.g. Python{,} JS{,} or C++),
-%%                 [Auto-generated code
-%%                   [gRPC Process
-%%                     [Application or Service, fill=bleudefrance]
-%%                   ]
-%%                 ]
-%%               ]
-%%             \end{forest}
-%%           \end{figure}
-%%         \end{column}
-
-%%     \end{columns}
-
-%% \end{frame}
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile=singleslide]
+  \frametitle{Remote API - Example}
+  \vspace{-10pt}
+
+  \begin{columns}[T]
+    \begin{column}{.6\textwidth}
+      \vspace{-5pt}
+      \begin{itemize}
+      \item{We have an example for you at
+        \href{https://apieigen.docs.ansys.com/index.html}{API Eigen Example}}
+      \item{Includes:}
+        \begin{itemize}
+        \item{C++ REST Server and Client}
+        \item{C++ gRPC Server and Client}
+        \item{Python REST Server and Client}
+        \item{Python gRPC Server and Client}
+        \end{itemize}
+      \item{Example designed to expose you to the basics of library-orientated
+        remote APIs}
+      \end{itemize}
+    \end{column}
+
+    \begin{column}{.45\textwidth}
+      \centering
+      \includegraphics[height=4.5cm]{figures/api-benchmark.png}
+    \end{column}
+
+  \end{columns}
+
+      \begin{example}
+      \vspace{-5pt}
+        \begin{lstlisting}[basicstyle=\tiny]
+>>> import ansys.eigen.python.rest.server as rest_server
+>>> app = rest_server.create_app()
+>>> app.run("127.0.0.1", 5000)
+        \end{lstlisting}
+        \vspace{-5pt}
+      \end{example}
+
+
+\end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% End of presentation
-
 \lastframe{}
 
 \end{document}

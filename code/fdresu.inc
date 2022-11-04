@@ -13,4 +13,3 @@ c                                    (curdof(i),i=1,numdof)
 c   NOD      i       1     nnod     Nodal equivalence table. This table equates
 c                                   the number used for storage to the actual
 c                                   node number
-c                                    (Back(i),i=1,nnod)
