@@ -11,6 +11,8 @@
 \usepackage{pdfpages}
 \usepackage{listings}
 \usepackage{hyperref}
+\usepackage{etoolbox}
+\AtBeginEnvironment{quote}{\par\singlespacing\small}
 
 \usepackage{tikz}
 \usetikzlibrary{intersections}
@@ -93,7 +95,70 @@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Why APIs? - Problem Definition}
+\section{Why APIs?}
+
+\begin{frame}[fragile=singleslide]
+  \frametitle{Remote API - Overview}
+  \vspace{-10pt}
+
+  \begin{itemize}
+  \item Today, APIs are playing an increasingly important role in our lives.
+  \item They provide the means for our computers to interact with the outside world, and they allow us to access information and services that we wouldn't otherwise be able to use.
+  \item In the future, they will become even more important, as they will be used to control and manage our increasingly complex systems.
+  \end{itemize}
+
+  \begin{exampleblock}{API Example}
+    This slide was entirely generated from an API based on this statement:
+
+    \begin{quote}
+    ``Public software APIs will be so fundamental to our modern products that
+    will be unable to comprehend how we survived without them.''
+    \end{quote}
+
+  \end{exampleblock}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{OpenAI API Query}
+\begin{frame}[fragile=singleslide]
+  \frametitle{OpenAI API Query}
+
+  \begin{itemize}
+  \item POST a simple API query to OpenAI's GPT-3 API.
+  \item Using the API defined at \href{https://beta.openai.com/docs/api-reference/completions/create?lang=curl}{OpenAI GPT-3 - API} to submit a \texttt{curl} request.
+  \end{itemize}
+
+  \begin{columns}[T]
+    \begin{column}{.5\textwidth}
+      \begin{exampleblock}{OpenAI API}
+        \inputminted[fontsize=\footnotesize]{python}{code/openai_api.sh}
+      \end{exampleblock}
+    \end{column}
+
+    \begin{column}{.5\textwidth}
+      \centering
+      \vspace{12pt}
+      \href{https://asciinema.org/a/537661}{\includegraphics[width=0.9\textwidth]{figures/api-prompt.png}}
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile=singleslide]
+  \frametitle{OpenAI API Query - Python}
+
+  Alternatively, you can use their Python client library to submit a request:
+
+  \begin{exampleblock}{OpenAI API}
+    \inputminted[fontsize=\footnotesize]{python}{code/openai_api.py}
+  \end{exampleblock}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Problem Space}
 \begin{frame}
   \frametitle{APIs - Problem Space}
 
@@ -221,7 +286,7 @@
     \begin{itemize}
     \item A C header file
     \item Public Python class function
-    \item HTTP POST Request Method
+    \item RESTful HTTP API (POST, GET)
     \end{itemize}
   \end{examples}
 
@@ -246,6 +311,7 @@
 
 \end{frame}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
   \frametitle{APIs in the Wild - Python API}
   \vspace{-10pt}
@@ -265,38 +331,12 @@
   \frametitle{APIs in the Wild - REST API}
   \vspace{-10pt}
 
-  \href{https://onshape-public.github.io/docs/apioverview/}{OnShape - API Reference}
+  \href{https://beta.openai.com/docs/api-reference/completions/create?lang=python}{OpenAI - API Reference}
 
   \centering
-  \includegraphics[height=.75\textheight]{./figures/onshape_api.png}
+  \includegraphics[height=.75\textheight]{./figures/openai-api.png}
 
 \end{frame}
-
-\begin{frame}
-  \frametitle{APIs in the Wild - REST API}
-  \vspace{-10pt}
-
-  \href{https://stripe.com/docs/api}{Stripe - API Reference}
-
-  \centering
-  \includegraphics[height=.75\textheight]{./figures/stripe_api.png}
-
-\end{frame}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}
-  \frametitle{APIs in the Wild - REST API}
-  \vspace{-10pt}
-
-  \href{https://kittycad.io/docs/api/}{KittyCAD - API Reference}
-
-  \centering
-  \includegraphics[height=.75\textheight]{./figures/kittycad_api.png}
-
-\end{frame}
-
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% \subsection{Ansys's APIs - C\#}
@@ -576,13 +616,50 @@
   \vspace{-20pt}
   \begin{columns}[T]
     \begin{column}{.6\textwidth}
-      \begin{example}
+      \begin{exampleblock}{\small Example REST Call}
         \begin{lstlisting}[basicstyle=\scriptsize]
 curl -X POST "http://127.0.0.1:5000/Vectors" \
   -H "Content-Type: application/json" \
   -d '{"value":[5, 23, 3, 4]}'
         \end{lstlisting}
-      \end{example}
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{.2\textwidth}
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Remote API}
+\begin{frame}[fragile=singleslide]
+  \frametitle{Remote API - Lessons Learned}
+  \vspace{-10pt}
+
+  \begin{itemize}
+  \item Web-facing APIs must reply on an abstraction layer that exposes only what is necessary to accomplish the task.
+    \begin{itemize}
+    \item An extended audience for your APIs.
+    \item APIs can be reused to support new digital products.
+    \item Normalized, consistent and well-governed API code and documentation.
+    \item Flexibility on alternative/future coding standards and formats.
+    \end{itemize}
+  \item This will require the same sort of refactoring and abstracting as when
+    exposing Ansys's products as GUIs. However, this time we need to consider
+    both human and computers as ``first class'' users.
+  \end{itemize}
+
+  \vspace{-15pt}
+  \pyramidthree{}
+
+  %% Get example on the left
+  \vspace{-5pt}
+  \begin{columns}[T]
+    \begin{column}{.6\textwidth}
+      \begin{exampleblock}{\small Abstracted API}
+        \inputminted[fontsize=\scriptsize]{python}{code/sample_apis.py}
+      \end{exampleblock}
     \end{column}
     \begin{column}{.2\textwidth}
     \end{column}
