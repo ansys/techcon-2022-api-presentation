@@ -12,7 +12,7 @@ Please feel free to point out any problems with this presentation by opening an 
 
 ### View the Presentation
 
-Visit [api_techcon_2022.pdf](https://crispy-guacamole-c1babc92.pages.github.io/api_techcon_2022.pdf) to see the full generated presentation.
+Visit [api_techcon_2022.pdf](https://ansys.github.io/techcon-2022-api-presentation/api_techcon_2022.pdf) to see the full generated presentation.
 
 ## Build it Yourself
 
